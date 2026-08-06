@@ -1,292 +1,109 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Iyadh & Arij</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Amiri:wght@400;700&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --cream:#F7EFE0;
-    --cream2:#F1E4CB;
-    --cream3:#EAD9B8;
-    --ink:#4A3B25;
-    --gold:#A9812F;
-    --gold-light:#C9A24B;
-    --gold-deep:#7C5E20;
-  }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  html{scroll-behavior:smooth;}
-  body{
-    font-family:'Jost', sans-serif;
-    color:var(--ink);
-    overflow-x:hidden;
-    /* one continuous gradient canvas — no hard section breaks */
-    background:linear-gradient(180deg,
-      var(--cream) 0%,
-      var(--cream) 20%,
-      var(--cream2) 45%,
-      var(--cream2) 65%,
-      var(--cream3) 85%,
-      var(--cream3) 100%);
-  }
-
-  /* soft floating gold dust across the whole page */
-  .dust{ position:fixed; inset:0; pointer-events:none; z-index:1; overflow:hidden; }
-  .dust span{
-    position:absolute; width:3px; height:3px; border-radius:50%;
-    background:var(--gold-light); opacity:.5;
-    animation:float 14s linear infinite;
-  }
-  @keyframes float{
-    0%{ transform:translateY(110vh) translateX(0); opacity:0; }
-    10%{ opacity:.6; }
-    100%{ transform:translateY(-10vh) translateX(30px); opacity:0; }
-  }
-
-  .flow{ position:relative; z-index:2; }
-  .block{
-    min-height:100vh;
-    width:100%;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    padding:70px 24px;
-  }
-
-  /* ---------- ENVELOPPE ---------- */
-  #envelope{ cursor:pointer; overflow:hidden; position:relative; min-height:100vh;}
-  .flap{
-    position:absolute; top:0; left:0; width:100%; height:52%;
-    background:linear-gradient(135deg, var(--cream2), var(--cream));
-    clip-path:polygon(0 0,100% 0,50% 100%);
-    transform-origin:top center;
-    transition:transform 1s cubic-bezier(.6,0,.2,1);
-  }
-  #envelope.open .flap{ transform:rotateX(180deg); }
-  .seal{
-    width:150px; height:150px; border-radius:50%;
-    background:radial-gradient(circle at 35% 30%, var(--gold-light), var(--gold-deep) 75%);
-    display:flex; align-items:center; justify-content:center;
-    box-shadow:0 8px 24px rgba(124,94,32,0.4), inset 0 2px 4px rgba(255,255,255,0.4);
-    border:3px solid #8a6a24; z-index:5;
-    animation:pulse 2.6s ease-in-out infinite;
-    transition:transform .6s ease, opacity .6s ease;
-  }
-  #envelope.open .seal{ transform:scale(0.4) translateY(-40px); opacity:0; }
-  @keyframes pulse{ 0%,100%{box-shadow:0 8px 24px rgba(124,94,32,0.4), 0 0 0 0 rgba(169,129,47,.35);} 50%{box-shadow:0 8px 24px rgba(124,94,32,0.4), 0 0 0 14px rgba(169,129,47,0);} }
-  .seal span{ font-family:'Amiri', serif; color:#3d2c0f; font-size:26px; }
-  .tap-text{
-    margin-top:28px; font-family:'Cormorant Garamond', serif; font-style:italic;
-    font-size:22px; color:var(--gold-deep); letter-spacing:1px; transition:opacity .4s ease;
-  }
-  #envelope.open .tap-text{ opacity:0; }
-  .ornament-line{ width:90px; height:1px; background:var(--gold); margin:14px auto; opacity:.7; }
-
-  /* ---------- reveal on scroll ---------- */
-  .reveal{ opacity:0; transform:translateY(30px); transition:opacity .9s ease, transform .9s ease; }
-  .reveal.in{ opacity:1; transform:translateY(0); }
-
-  .eyebrow{ font-family:'Cormorant Garamond', serif; font-style:italic; font-size:24px; color:var(--gold-deep); }
-  .divider{ width:70px; height:1px; background:var(--gold); margin:14px auto 24px; opacity:.7;}
-
-  /* ---------- PAGE 1 : Wedding Day ---------- */
-  #page1 .wd{ font-family:'Cormorant Garamond', serif; font-style:italic; font-size:28px; color:var(--gold-deep); }
-  #page1 .wd-date{ font-size:20px; letter-spacing:3px; margin-top:6px; color:var(--ink); }
-  #page1 .names{
-    font-family:'Cormorant Garamond', serif; font-size:clamp(52px,13vw,92px);
-    line-height:1.05; margin-top:26px; color:var(--ink);
-  }
-  #page1 .amp{ display:block; font-size:30px; margin:4px 0; opacity:.75; }
-  .scroll-hint{ margin-top:46px; font-size:13px; letter-spacing:3px; text-transform:uppercase; color:var(--gold-deep); opacity:.85; }
-  .scroll-hint::after{ content:'↓'; display:block; margin-top:8px; animation:bob 1.6s ease-in-out infinite; }
-  @keyframes bob{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(6px);} }
-
-  /* ---------- PAGE 2 : da3wa arabe ---------- */
-  #page2{ direction:rtl; }
-  #page2 .besmeleh{ font-family:'Amiri', serif; font-size:30px; color:var(--gold-deep); font-weight:700; }
-  #page2 .titre{ font-family:'Amiri', serif; font-size:26px; margin-top:22px; color:var(--ink); }
-  #page2 .verset{
-    font-family:'Amiri', serif; font-style:italic; font-size:20px; line-height:2.3;
-    max-width:420px; margin:30px auto; color:#5a482b;
-  }
-  #page2 .familles{
-    font-family:'Amiri', serif; font-size:19px; line-height:2.1; max-width:440px; margin:0 auto; color:var(--ink);
-  }
-  #page2 .enfants{ font-family:'Amiri', serif; font-size:25px; color:var(--gold-deep); margin-top:20px; font-weight:700;}
-
-  /* ---------- PAGE 3 : countdown + lieu ---------- */
-  #page3 .cd-title{ font-family:'Cormorant Garamond', serif; font-style:italic; font-size:26px; color:var(--gold-deep); }
-  #countdown{ display:flex; gap:22px; margin-top:22px; }
-  #countdown div{ text-align:center; }
-  #countdown .num{ font-family:'Cormorant Garamond', serif; font-size:44px; color:var(--gold-deep); }
-  #countdown .lbl{ font-size:11px; letter-spacing:2px; text-transform:uppercase; opacity:.7; }
-
-  .lieu-block{ margin-top:64px; }
-  .lieu-name{ font-family:'Cormorant Garamond', serif; font-size:30px; }
-  .map-box{
-    width:min(420px,86vw); height:220px; border-radius:6px; overflow:hidden;
-    border:1px solid var(--gold-light); margin:22px auto 0; box-shadow:0 10px 24px rgba(74,59,37,.15);
-  }
-  .map-box iframe{ width:100%; height:100%; border:0; filter:sepia(15%); }
-
-  /* ---------- PAGE FINALE : photo ---------- */
-  #final .hope{ font-family:'Cormorant Garamond', serif; font-style:italic; font-size:30px; color:var(--gold-deep); margin-bottom:30px; }
-  #final img{
-    width:min(340px,80vw); border-radius:10px;
-    box-shadow:0 24px 50px rgba(74,59,37,.3);
-  }
-  #final .signature{ margin-top:30px; font-family:'Cormorant Garamond', serif; font-size:22px; color:var(--ink); }
-
-  /* ---------- MUSIC TOGGLE ---------- */
-  #music-btn{
-    position:fixed; bottom:20px; right:20px; z-index:50;
-    width:52px; height:52px; border-radius:50%;
-    background:var(--gold-deep); color:#fff9ec; border:none;
-    display:flex; align-items:center; justify-content:center;
-    box-shadow:0 6px 18px rgba(74,59,37,.35); cursor:pointer;
-    transition:transform .3s ease;
-  }
-  #music-btn:hover{ transform:scale(1.08); }
-  #music-btn svg{ width:22px; height:22px; }
-  .note-orbit{ position:absolute; inset:-6px; border:1px solid var(--gold-light); border-radius:50%; opacity:0; }
-  #music-btn.playing .note-orbit{ opacity:1; animation:spin 6s linear infinite; }
-  @keyframes spin{ to{ transform:rotate(360deg); } }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>e_learnX - Espace étudiant</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="brand">e_learnX</div>
+      <div id="header-user" class="header-user hidden">Bienvenue, <strong>Étudiant</strong></div>
+    </header>
 
-<div class="dust" id="dust"></div>
+    <main class="main-content">
+      <section id="login-screen" class="screen screen-center">
+        <div class="card login-card">
+          <h1>Connexion</h1>
+          <p>Accédez à votre tableau de bord e_learnX</p>
+          <input id="login-email" type="email" placeholder="Email" value="etudiant@example.com" />
+          <input id="login-password" type="password" placeholder="Mot de passe" value="123456" />
+          <button id="login-button" class="primary-button">Se connecter</button>
+        </div>
+      </section>
 
-<div class="flow">
+      <section id="dashboard-screen" class="screen hidden">
+        <aside class="sidebar">
+          <div class="sidebar-block">
+            <h2>Navigation</h2>
+            <button id="dashboard-home" class="nav-button active">Tableau de bord</button>
+          </div>
+          <div class="sidebar-block">
+            <h3>Rechercher</h3>
+            <input id="search-input" type="search" placeholder="Rechercher cours ou ressource" />
+          </div>
+          <div class="sidebar-block">
+            <h3>Mon historique</h3>
+            <ul id="history-list" class="history-list"></ul>
+          </div>
+        </aside>
 
-  <!-- ================= ENVELOPPE ================= -->
-  <section id="envelope">
-    <div class="flap"></div>
-    <div class="block" style="min-height:100vh;">
-      <div class="seal"><span>﷽</span></div>
-      <div class="tap-text">Appuyez pour ouvrir</div>
-      <div class="ornament-line"></div>
-    </div>
-  </section>
+        <section class="dashboard">
+          <div class="dashboard-header">
+            <div>
+              <h1>Tableau de bord</h1>
+              <p>Vos cours inscrits sont organisés par matière.</p>
+            </div>
+            <div class="badge-summary">
+              <span id="total-courses-badge" class="badge">0 cours</span>
+              <span id="completed-rate-badge" class="badge secondary">0 % complétés</span>
+            </div>
+          </div>
 
-  <!-- ================= PAGE 1 : WEDDING DAY ================= -->
-  <section id="page1" class="block">
-    <div class="wd reveal">Wedding Day</div>
-    <div class="wd-date reveal">10 . 11 . 2026</div>
-    <div class="names reveal">Iyadh<span class="amp">&</span>Arij</div>
-    <div class="scroll-hint reveal">Faites défiler</div>
-  </section>
+          <div id="courses-list" class="courses-list"></div>
+        </section>
+      </section>
 
-  <!-- ================= PAGE 2 : DA3WA ================= -->
-  <section id="page2" class="block">
-    <div class="besmeleh reveal">بسم الله الرحمن الرحيم</div>
-    <div class="titre reveal">دعوة زواج</div>
-    <div class="verset reveal">
-      « على ما اختاره الله لي وألفته نفسي<br>
-      وارتضيته زوجًا وشريكًا لحياتي »
-    </div>
-    <div class="familles reveal">
-      تتشرف عائلتا السيد محمد شوشان<br>
-      والسيد جمال قليوز<br>
-      بدعوتكم لحضور حفل زفاف ابنيهما
-    </div>
-    <div class="enfants reveal">إياض و أريج</div>
-  </section>
+      <section id="course-screen" class="screen hidden">
+        <div class="course-topbar">
+          <button id="back-dashboard" class="secondary-button">← Retour</button>
+          <div>
+            <h1 id="course-title"></h1>
+            <p id="course-subtitle"></p>
+          </div>
+        </div>
 
-  <!-- ================= PAGE 3 : COUNTDOWN + LIEU ================= -->
-  <section id="page3" class="block">
-    <div class="cd-title reveal">The Celebration Begins In</div>
-    <div id="countdown" class="reveal">
-      <div><div class="num" id="cd-days">--</div><div class="lbl">Days</div></div>
-      <div><div class="num" id="cd-hours">--</div><div class="lbl">Hours</div></div>
-      <div><div class="num" id="cd-min">--</div><div class="lbl">Min</div></div>
-      <div><div class="num" id="cd-sec">--</div><div class="lbl">Sec</div></div>
-    </div>
+        <div class="course-layout">
+          <nav class="course-sidebar">
+            <h2>Chapitres</h2>
+            <ul id="chapter-list" class="chapter-list"></ul>
+          </nav>
 
-    <div class="lieu-block reveal">
-      <div class="eyebrow">Lieu</div>
-      <div class="divider"></div>
-      <div class="lieu-name">Salle des Fêtes Mozart</div>
-      <div class="map-box">
-        <iframe src="https://www.google.com/maps?q=Salle+des+Fetes+Mozart&output=embed" loading="lazy"></iframe>
-      </div>
-    </div>
-  </section>
+          <article class="course-content">
+            <div class="course-actions">
+              <button id="prev-chapter" class="secondary-button">Précédent</button>
+              <button id="next-chapter" class="secondary-button">Suivant</button>
+              <button id="download-material" class="primary-button">Télécharger le support</button>
+            </div>
 
-  <!-- ================= PAGE FINALE : PHOTO ================= -->
-  <section id="final" class="block">
-    <div class="hope reveal">Hope to see you there!</div>
-    <img class="reveal" src="couple.png" alt="Iyadh & Arij">
-    <div class="signature reveal">Iyadh & Arij · 10.11.2026</div>
-  </section>
+            <div class="content-panel">
+              <div class="content-meta">
+                <div id="chapter-badge" class="badge secondary">Chapitre 1</div>
+                <p id="chapter-status">Statut : non vu</p>
+              </div>
 
-</div>
+              <div id="chapter-description" class="chapter-description"></div>
 
-<!-- MUSIC : remplacez la src par un fichier mp3 de musique douce de mariage -->
-<button id="music-btn" onclick="toggleMusic()">
-  <div class="note-orbit"></div>
-  <svg id="music-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-</button>
-<audio id="bg-audio" loop>
-  <source src="wedding-music.mp3" type="audio/mpeg">
-</audio>
+              <div class="media-section">
+                <div class="video-frame">
+                  <video id="chapter-video" controls preload="metadata">
+                    <source id="video-source" src="" type="video/mp4" />
+                    Votre navigateur ne prend pas en charge la vidéo intégrée.
+                  </video>
+                </div>
+                <div class="pdf-frame">
+                  <iframe id="pdf-viewer" src="" title="Support PDF"></iframe>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
 
-<script>
-  // gold dust particles
-  const dust = document.getElementById('dust');
-  for(let i=0;i<26;i++){
-    const s = document.createElement('span');
-    s.style.left = Math.random()*100 + 'vw';
-    s.style.animationDelay = (Math.random()*14) + 's';
-    s.style.animationDuration = (10 + Math.random()*8) + 's';
-    dust.appendChild(s);
-  }
-
-  // open envelope
-  const envelope = document.getElementById('envelope');
-  envelope.addEventListener('click', () => {
-    envelope.classList.add('open');
-    setTimeout(() => { document.getElementById('page1').scrollIntoView({behavior:'smooth'}); }, 700);
-    const audio = document.getElementById('bg-audio');
-    audio.play().then(()=>{ document.getElementById('music-btn').classList.add('playing'); }).catch(()=>{});
-  });
-
-  // music toggle
-  function toggleMusic(){
-    const audio = document.getElementById('bg-audio');
-    const btn = document.getElementById('music-btn');
-    if(audio.paused){ audio.play(); btn.classList.add('playing'); }
-    else{ audio.pause(); btn.classList.remove('playing'); }
-  }
-
-  // scroll reveal
-  const io = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
-  }, {threshold:0.2});
-  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-
-  // countdown to 10 Nov 2026
-  const target = new Date('2026-11-10T00:00:00');
-  function updateCountdown(){
-    const now = new Date();
-    let diff = target - now;
-    if(diff < 0) diff = 0;
-    const d = Math.floor(diff/86400000);
-    const h = Math.floor((diff%86400000)/3600000);
-    const m = Math.floor((diff%3600000)/60000);
-    const s = Math.floor((diff%60000)/1000);
-    document.getElementById('cd-days').textContent = d;
-    document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
-    document.getElementById('cd-min').textContent = String(m).padStart(2,'0');
-    document.getElementById('cd-sec').textContent = String(s).padStart(2,'0');
-  }
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
-</script>
-
+  <script src="app.js"></script>
 </body>
 </html>
